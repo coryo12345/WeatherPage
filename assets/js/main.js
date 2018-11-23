@@ -5,7 +5,7 @@ var weather = $(".weather");
 //handle(JSON.parse(data));
 
 var request = new XMLHttpRequest();
-var url = "https://api.openweathermap.org";// "/data/2.5/weather";
+var url = "https://api.openweathermap.org";
 var key = "&APPID=7596ddf7ddf543775e41095ec80fa8c4";
 var units = "&units=imperial";
 
