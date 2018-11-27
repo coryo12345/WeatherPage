@@ -17,11 +17,11 @@ var units = "&units=imperial";
 function searchZip() {
     var zip = document.getElementById("search");
     console.log(zip.value);
-    if (zip.length < 5 || zip.length >= 6) {
+    if (zip.value.length < 5 || zip.value.length >= 6) {
         $("#search").value = "";
         return;
     }
-    request.open("GET", urlFromZip(zip), true);
+    request.open("GET", urlFromZip(zip.value), true);
     request.onload = function () {
         var data = JSON.parse(this.response);
         handle(data);
