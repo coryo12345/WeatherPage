@@ -1,5 +1,10 @@
 var h2 = $("h2");
 var weather = $(".weather");
+document.addEventListener('keypress', function(e){
+    if(e.keyCode == 13 && $('#search').is(':focus')){
+        searchZip();
+    }
+});
 
 //var data = '{"coord":{"lon":-77.61,"lat":42.9},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":13.5,"pressure":1036,"humidity":70,"temp_min":12.02,"temp_max":14},"visibility":16093,"wind":{"speed":4.85,"deg":343.5},"clouds":{"all":1},"dt":1542927300,"sys":{"type":1,"id":2130,"message":0.0043,"country":"US","sunrise":1542888747,"sunset":1542922855},"id":420026867,"name":"Rochester","cod":200}';
 //handle(JSON.parse(data));
@@ -9,15 +14,15 @@ var url = "https://api.openweathermap.org";
 var key = "&APPID=7596ddf7ddf543775e41095ec80fa8c4";
 var units = "&units=imperial";
 
-function searchZip(){
+function searchZip() {
     var zip = document.getElementById("search");
     console.log(zip.value);
-    if(zip.length < 5 || zip.length >= 6){
+    if (zip.length < 5 || zip.length >= 6) {
         $("#search").value = "";
         return;
     }
     request.open("GET", urlFromZip("14485"), true);
-    request.onload = function(){
+    request.onload = function () {
         var data = JSON.parse(this.response);
         handle(data);
         //roc.html(JSON.stringify(data));
@@ -25,15 +30,30 @@ function searchZip(){
     request.send();
 }
 
-function handle(data){
+
+function handle(data) {
     console.log(data);
+    if(data.cod == 429){
+        weather.html("Server Error. Please Try Again Later.");
+        return;
+    }
 
     h2.html(data.name);
 
     var w = "";
+
+    w += "<h4>Weather</h4>";
+    w += "<img src=" + "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png>"
+    tmp = data.weather[0].description;
+    w += "<p>" + tmp + "</p>";
+
     w += "<h4>Temperature</h4>";
     tmp = Math.round(data.main.temp);
     w += "<p>" + tmp + " &degF</p>";
+    tmp = Math.round(data.main.temp_min);
+    w += "<p>Low: " + tmp + " &degF</p>";
+    tmp = Math.round(data.main.temp_max);
+    w += "<p>High: " + tmp + " &degF</p>";
 
     w += "<h4>Wind</h4>";
     tmp = degToString(data.wind.deg);
@@ -52,41 +72,41 @@ function handle(data){
     weather.html(w);
 }
 
-function degToString(deg){
-    if(deg >= 337.5 || deg < 22.5){
+function degToString(deg) {
+    if (deg >= 337.5 || deg < 22.5) {
         return "East";
     }
-    else if(deg >= 22.5 && deg < 67.5){
+    else if (deg >= 22.5 && deg < 67.5) {
         return "North-East";
     }
-    else if(deg >= 67.5 && deg < 112.5){
+    else if (deg >= 67.5 && deg < 112.5) {
         return "North";
     }
-    else if(deg >= 112.5 && deg < 157.5){
+    else if (deg >= 112.5 && deg < 157.5) {
         return "North-West";
     }
-    else if(deg >= 157.5 && deg < 202.5){
+    else if (deg >= 157.5 && deg < 202.5) {
         return "West";
     }
-    else if(deg >= 202.5 && deg < 247.5){
+    else if (deg >= 202.5 && deg < 247.5) {
         return "South-West";
     }
-    else if(deg >= 247.5 && deg < 292.5){
+    else if (deg >= 247.5 && deg < 292.5) {
         return "South";
     }
-    else{
+    else {
         return "South-East";
     }
 }
 
-function urlFromCity(city){
+function urlFromCity(city) {
     return url + "/data/2.5/weather?q=" + city + units + key;
 }
 
-function urlFromCityCountry(city, country){
+function urlFromCityCountry(city, country) {
     return url + "/data/2.5/weather?q=" + city + "," + country + units + key;
 }
 
-function urlFromZip(zip){
+function urlFromZip(zip) {
     return url + "/data/2.5/weather?zip=" + zip + units + key;
 }
