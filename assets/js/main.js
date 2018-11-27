@@ -21,7 +21,7 @@ function searchZip() {
         $("#search").value = "";
         return;
     }
-    request.open("GET", urlFromZip("14485"), true);
+    request.open("GET", urlFromZip(zip), true);
     request.onload = function () {
         var data = JSON.parse(this.response);
         handle(data);
