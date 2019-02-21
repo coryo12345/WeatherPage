@@ -6,26 +6,18 @@ document.addEventListener('keypress', function(e){
     }
 });
 
-//var data = '{"coord":{"lon":-77.61,"lat":42.9},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01n"}],"base":"stations","main":{"temp":13.5,"pressure":1036,"humidity":70,"temp_min":12.02,"temp_max":14},"visibility":16093,"wind":{"speed":4.85,"deg":343.5},"clouds":{"all":1},"dt":1542927300,"sys":{"type":1,"id":2130,"message":0.0043,"country":"US","sunrise":1542888747,"sunset":1542922855},"id":420026867,"name":"Rochester","cod":200}';
-//handle(JSON.parse(data));
-
-var request = new XMLHttpRequest();
-var url = "https://api.openweathermap.org";
-var key = "&APPID=7596ddf7ddf543775e41095ec80fa8c4";
-var units = "&units=imperial";
-
 function searchZip() {
     var zip = document.getElementById("search");
     console.log(zip.value);
-    if (zip.value.length < 5 || zip.value.length >= 6) {
+    if (zip.value.length != 5) {
         $("#search").value = "";
         return;
     }
-    request.open("GET", urlFromZip(zip.value), true);
+    var url = "http://corydio.com/api/weatherZip?zip=" + zip.value;
+    request.open("GET", url, true);
     request.onload = function () {
         var data = JSON.parse(this.response);
         handle(data);
-        //roc.html(JSON.stringify(data));
     };
     request.send();
 }
@@ -97,16 +89,4 @@ function degToString(deg) {
     else {
         return "South-East";
     }
-}
-
-function urlFromCity(city) {
-    return url + "/data/2.5/weather?q=" + city + units + key;
-}
-
-function urlFromCityCountry(city, country) {
-    return url + "/data/2.5/weather?q=" + city + "," + country + units + key;
-}
-
-function urlFromZip(zip) {
-    return url + "/data/2.5/weather?zip=" + zip + units + key;
 }
